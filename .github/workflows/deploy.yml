@@ -40,13 +40,14 @@ jobs:
           pnpm run generate:json
           pnpm run build
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+      - uses: cachix/install-nix-action@v27
         with:
-          packageManager: pnpm
-          workingDirectory: packages/api # working-directoryを付けていても必要
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          nix run nixpkgs#wrangler -- pages deploy
   deploy-web:
     name: Deploy Web
     if: github.event.pull_request.draft == false
@@ -62,13 +63,14 @@ jobs:
       - name: Build
         run: pnpm run build
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+      - uses: cachix/install-nix-action@v27
         with:
-          packageManager: pnpm
-          workingDirectory: packages/web # working-directoryを付けていても必要
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          nix run nixpkgs#wrangler -- pages deploy
   deploy-image-generator:
     name: Deploy Image Generator
     if: github.event.pull_request.draft == false
@@ -84,10 +86,11 @@ jobs:
       - name: Build
         run: pnpm run build
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+      - uses: cachix/install-nix-action@v27
         with:
-          packageManager: pnpm
-          workingDirectory: packages/image-generator # working-directoryを付けていても必要
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          nix run nixpkgs#wrangler -- pages deploy
